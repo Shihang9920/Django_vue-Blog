@@ -1,16 +1,16 @@
+from rest_framework import viewsets
 from article.models import Article
-from django.http import JsonResponse, Http404
-from article.serializers import ArticleListSerializer, ArticleDetailSerializer
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status, generics
-from rest_framework.views import APIView
-# from rest_framework.permissions import IsAuthenticated
 from article.permissions import IsAdminUserOrReadOnly
+from article.serializers import ArticleSerializer
 
 
-# Create your views here.
+class ArticleViewSet(viewsets.ModelViewSet):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    permission_classes = [IsAdminUserOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 # @api_view(['GET', 'POST'])
 # def article_list(request):
@@ -30,15 +30,19 @@ from article.permissions import IsAdminUserOrReadOnly
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ArticleList(generics.ListAPIView):
-    permission_classes = [IsAdminUserOrReadOnly]
-    queryset = Article.objects.all()
-    serializer_class = ArticleListSerializer
+# class ArticleList(generics.ListCreateAPIView):
+#     permission_classes = [IsAdminUserOrReadOnly]
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleListSerializer
+#
+#     def perform_create(self, serializer):
+#         serializer.save(author=self.request.user)
 
-    # def get(self, request):
-    #     articles = Article.objects.all()
-    #     serializer = ArticleListSerializer(articles, many=True, context={'request': request})
-    #     return Response(serializer.data)
+
+# def get(self, request):
+#     articles = Article.objects.all()
+#     serializer = ArticleListSerializer(articles, many=True, context={'request': request})
+#     return Response(serializer.data)
 
 
 # class ArticleDetails(APIView):
@@ -70,7 +74,7 @@ class ArticleList(generics.ListAPIView):
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUserOrReadOnly]
-    queryset = Article.objects.all()
-    serializer_class = ArticleDetailSerializer
+# class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = [IsAdminUserOrReadOnly]
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleDetailSerializer

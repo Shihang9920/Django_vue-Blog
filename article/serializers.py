@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from article.models import Article
+from user_info.serializers import UserDescSerializer
 
 
 # class ArticleListSerializer(serializers.Serializer):
@@ -10,20 +11,31 @@ from article.models import Article
 #     created = serializers.DateTimeField()
 #     updated = serializers.DateTimeField()
 
-class ArticleListSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='article:detail')
+# class ArticleListSerializer(serializers.ModelSerializer):
+#     url = serializers.HyperlinkedIdentityField(view_name='article:detail')
+#     author = UserDescSerializer(read_only=True)
+#
+#     class Meta:
+#         read_only_fields = ['author']
+#         model = Article
+#         fields = [
+#             # 'id',
+#             'url',
+#             'title',
+#             'body',
+#             'author'
+#         ]
+#
+#
+# class ArticleDetailSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Article
+#         fields = '__all__'
 
-    class Meta:
-        model = Article
-        fields = [
-            # 'id',
-            'url',
-            'title',
-            'body',
-        ]
 
+class ArticleSerializer(serializers.HyperlinkedModelSerializer):
+    author = UserDescSerializer(read_only=True)
 
-class ArticleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
