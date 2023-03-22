@@ -3,12 +3,49 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
+class Category(models.Model):
+    """文章分类"""
+    title = models.CharField(max_length=100)
+    created = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return self.title
+
+
+class Tag(models.Model):
+    """标签表"""
+    text = models.CharField(max_length=30)
+
+    class Meta:
+        ordering = ['-id']
+
+    def __str__(self):
+        return self.text
+
+
 class Article(models.Model):
     """文章表"""
+    # 作者
     author = models.ForeignKey(
         User,
         null=True,
         on_delete=models.CASCADE,
+        related_name='article'
+    )
+    # 分类
+    category = models.ForeignKey(
+        Category,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='article'
+    )
+    tag = models.ManyToManyField(
+        Tag,
+        blank=True,
         related_name='article'
     )
     # 标题
