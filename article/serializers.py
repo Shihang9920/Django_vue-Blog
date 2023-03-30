@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from article.models import Article, Category, Tag
+from article.models import Article, Category, Tag, Avatar
 from user_info.serializers import UserDescSerializer
 
 
@@ -44,7 +44,16 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+class AvatarSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='avatar-detail')
+
+    class Meta:
+        model = Avatar
+        fields = '__all__'
+
+
 class ArticleBaseSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     author = UserDescSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     category_id = serializers.IntegerField(write_only=True, allow_null=True, required=False)
@@ -53,6 +62,12 @@ class ArticleBaseSerializer(serializers.HyperlinkedModelSerializer):
         many=True,
         required=False,
         slug_field='text',
+    )
+    avatar = AvatarSerializer(read_only=True)
+    avatar_id = serializers.IntegerField(
+        write_only=True,
+        allow_null=True,
+        required=False,
     )
 
     @staticmethod
@@ -69,6 +84,11 @@ class ArticleBaseSerializer(serializers.HyperlinkedModelSerializer):
                 if not Tag.objects.filter(text=text):
                     Tag.objects.create(text=text)
         return super().to_internal_value(data)
+
+    def validate_avatar_id(self, value):
+        if not Avatar.objects.filter(id=value).exists() and value is not None:
+            raise serializers.ValidationError("Avatar with id {} not exists.".format(value))
+        return value
 
     class Meta:
         model = Article

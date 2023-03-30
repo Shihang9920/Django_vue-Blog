@@ -1,7 +1,8 @@
 from rest_framework import viewsets, filters
-from article.models import Article, Category, Tag
+from article.models import Article, Category, Tag, Avatar
 from article.permissions import IsAdminUserOrReadOnly
-from article.serializers import ArticleSerializer, CategorySerializer, CategoryDetailSerializer, TagSerializer,ArticleDetailSerializer
+from article.serializers import ArticleSerializer, CategorySerializer, CategoryDetailSerializer, TagSerializer, \
+    ArticleDetailSerializer, AvatarSerializer
 
 """GET:用户发请求-->Django根据url找到viewset-->viewset调用父类的list()方法,返回Article的列表"""
 """POST:用户发请求-->Django根据url找到viewset-->将请求转为Python对象-->viewset调用父类的create()方法,创建并保存"""
@@ -18,11 +19,13 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
     def get_serializer_class(self):
-        if self.action=='list':
+        if self.action == 'list':
             return ArticleSerializer
         else:
             return ArticleDetailSerializer
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     """分类视图集"""
@@ -44,3 +47,9 @@ class TagViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUserOrReadOnly]
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+
+class AvatarViewSet(viewsets.ModelViewSet):
+    queryset = Avatar.objects.all()
+    serializer_class = AvatarSerializer
+    permission_classes = [IsAdminUserOrReadOnly]

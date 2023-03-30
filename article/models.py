@@ -25,7 +25,9 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.text
-
+class Avatar(models.Model):
+    """图片表"""
+    content = models.ImageField(upload_to='avatar/%Y%m%d')
 
 class Article(models.Model):
     """文章表"""
@@ -48,6 +50,13 @@ class Article(models.Model):
         Tag,
         blank=True,
         related_name='article'
+    )
+    avatar = models.ForeignKey(
+        Avatar,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name= 'article'
     )
     # 标题
     title = models.CharField(max_length=100)
