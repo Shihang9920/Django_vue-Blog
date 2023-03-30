@@ -11,7 +11,6 @@
     </div>
     <div>{{ formatted_time(article.created) }}</div>
   </div>
-
 </template>
 
 <script>

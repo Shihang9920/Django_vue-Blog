@@ -2,34 +2,6 @@ from rest_framework import serializers
 from article.models import Article, Category, Tag
 from user_info.serializers import UserDescSerializer
 
-"""class ArticleListSerializer(serializers.Serializer):
-    序列化器
-    id = serializers.CharField(read_only=True)
-    title = serializers.CharField(max_length=100, allow_blank=True)
-    body = serializers.CharField(allow_blank=True)
-    created = serializers.DateTimeField()
-    updated = serializers.DateTimeField()
-
-class ArticleListSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='article:detail')
-    author = UserDescSerializer(read_only=True)
-
-    class Meta:
-        read_only_fields = ['author']
-        model = Article
-        fields = [
-            # 'id',
-            'url',
-            'title',
-            'body',
-            'author'
-        ]
-class ArticleDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Article
-        fields = '__all__'
-"""
-
 
 class CategorySerializer(serializers.ModelSerializer):
     """序列化数据库中分类表"""
@@ -72,7 +44,7 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
-class ArticleSerializer(serializers.HyperlinkedModelSerializer):
+class ArticleBaseSerializer(serializers.HyperlinkedModelSerializer):
     author = UserDescSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     category_id = serializers.IntegerField(write_only=True, allow_null=True, required=False)
@@ -91,11 +63,34 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
 
     def to_internal_value(self, data):
         tags_data = data.get('tags')
+        print(tags_data)
         if isinstance(tags_data, list):
             for text in tags_data:
-                if not Tag.objects.filter(text=text).exists():
+                if not Tag.objects.filter(text=text):
                     Tag.objects.create(text=text)
         return super().to_internal_value(data)
+
+    class Meta:
+        model = Article
+        fields = '__all__'
+
+
+class ArticleSerializer(ArticleBaseSerializer):
+    class Meta:
+        model = Article
+        fields = '__all__'
+        extra_kwargs = {'body': {'write_only': True}}
+
+
+class ArticleDetailSerializer(ArticleBaseSerializer):
+    body_html = serializers.SerializerMethodField()
+    toc_html = serializers.SerializerMethodField()
+
+    def get_body_html(self, obj):
+        return obj.get_md()[0]
+
+    def get_toc_html(self, obj):
+        return obj.get_md()[1]
 
     class Meta:
         model = Article
