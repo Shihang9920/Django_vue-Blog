@@ -1,13 +1,9 @@
 <template>
   <div v-for="article in info.results" v-bind:key="article.url" id="articles">
     <div>
-            <span
-                v-for="tag in article.tag"
-                v-bind:key="tag"
-                class="tag"
-            >
-                {{ tag }}
-            </span>
+      <span v-for="tag in article.tag" v-bind:key="tag" class="tag">
+        {{ tag }}
+      </span>
     </div>
     <div class="article-title">
       {{ article.title }}
@@ -44,7 +40,11 @@ export default {
 #articles {
   padding: 10px;
   text-align: center;
-
+  border: 1px solid #ddd;
+  margin: 10px auto;
+  width: 400px;
+  box-shadow: 5px 5px 10px #aaaaaa;
+  border-radius: 10px;
 }
 
 .article-title {
@@ -60,7 +60,7 @@ export default {
   margin: 5px 5px 5px 0;
   font-family: Georgia, Arial, sans-serif;
   font-size: small;
-  background-color: #4e4e4e;
+  background-color: green;
   color: whitesmoke;
   border-radius: 5px;
 }

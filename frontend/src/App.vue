@@ -11,7 +11,11 @@ import BlogFooter from "@/components/BlogFooter.vue";
 
 export default {
   name: 'App',
-  components: {ArticleList, BlogHeader, BlogFooter}
+  components: {
+    ArticleList,
+    BlogHeader,
+    BlogFooter
+  }
 }
 </script>
 

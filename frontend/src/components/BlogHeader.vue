@@ -1,8 +1,9 @@
 <template>
-  <div id="header">
-    <span><img alt="Vue logo" src="../assets/logo.png" style="width: 50px;height: 50px;"></span>
-    <span>My Blogs</span>
+  <div class="header">
+    <img alt="Vue logo" src="../assets/logo.png" id="logo">
+    <p>A Simple Blog</p>
   </div>
+
   <hr>
 </template>
 
@@ -13,9 +14,21 @@ export default {
 </script>
 
 <style scoped>
-    #header {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 40px;
-    }
+.header {
+  text-align: center;
+  font-family: "Ink Free",serif;
+  margin: 20px auto;
+  font-size: 40px;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+
+}
+#logo{
+  width: 60px;
+  height: 60px;
+  margin-right: 20px;
+}
 </style>
